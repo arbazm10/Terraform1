@@ -1,5 +1,4 @@
 pipeline {
-
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
     } 
@@ -7,7 +6,6 @@ pipeline {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
-
    agent  any
     stages {
         stage('checkout') {
@@ -20,7 +18,6 @@ pipeline {
                     }
                 }
             }
-
         stage('Plan') {
             steps {
                 sh 'pwd;cd terraform/ ; terraform init'
@@ -34,7 +31,6 @@ pipeline {
                    equals expected: true, actual: params.autoApprove
                }
            }
-
            steps {
                script {
                     def plan = readFile 'terraform/tfplan.txt'
@@ -43,12 +39,10 @@ pipeline {
                }
            }
        }
-
         stage('Apply') {
             steps {
                 sh "pwd;cd terraform/ ; terraform apply -input=false tfplan"
             }
         }
     }
-
   }
